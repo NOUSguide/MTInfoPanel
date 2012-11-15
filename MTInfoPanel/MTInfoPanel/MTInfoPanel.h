@@ -11,19 +11,19 @@
 //  Read my blog post at http://mk.sg/8e on how to use this code
 
 //  As a side note on using this code, you might consider giving some credit to me by
-//	1) linking my website from your app's website 
-//	2) or crediting me inside the app's credits page 
+//	1) linking my website from your app's website
+//	2) or crediting me inside the app's credits page
 //	3) or a tweet mentioning @mugunthkumar
 //	4) A paypal donation to mugunth.kumar@gmail.com
 //
 //  A note on redistribution
-//	While I'm ok with modifications to this source code, 
+//	While I'm ok with modifications to this source code,
 //	if you are re-publishing after editing, please retain the above copyright notices
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef enum {    
+typedef enum {
     MTInfoPanelTypeInfo,        // blue
     MTInfoPanelTypeNotice,      // gray
     MTInfoPanelTypeSuccess,     // green
@@ -38,32 +38,32 @@ typedef enum {
 @property (nonatomic, assign) SEL onFinished;
 
 + (MTInfoPanel *)showPanelInView:(UIView *)view
-                            type:(MTInfoPanelType)type 
-                           title:(NSString *)title 
+                            type:(MTInfoPanelType)type
+                           title:(NSString *)title
                         subtitle:(NSString *)subtitle;
 
-+ (MTInfoPanel *)showPanelInView:(UIView *)view 
-                            type:(MTInfoPanelType)type 
-                           title:(NSString *)title 
++ (MTInfoPanel *)showPanelInView:(UIView *)view
+                            type:(MTInfoPanelType)type
+                           title:(NSString *)title
                         subtitle:(NSString *)subtitle
                        hideAfter:(NSTimeInterval)interval;
 
 + (MTInfoPanel *)showPanelInView:(UIView *)view
-                            type:(MTInfoPanelType)type 
-                           title:(NSString *)title 
+                            type:(MTInfoPanelType)type
+                           title:(NSString *)title
                         subtitle:(NSString *)subtitle
                            image:(UIImage *)image;
 
-+ (MTInfoPanel *)showPanelInView:(UIView *)view 
++ (MTInfoPanel *)showPanelInView:(UIView *)view
                             type:(MTInfoPanelType)type
-                           title:(NSString *)title 
+                           title:(NSString *)title
                         subtitle:(NSString *)subtitle
-                           image:(UIImage *)image 
+                           image:(UIImage *)image
                        hideAfter:(NSTimeInterval)interval;
 
-+ (MTInfoPanel *)showPanelInView:(UIView *)view 
++ (MTInfoPanel *)showPanelInView:(UIView *)view
                            title:(NSString *)title
-                        subtitle:(NSString *)subtitle 
+                        subtitle:(NSString *)subtitle
                            image:(UIImage *)image
                       startColor:(UIColor *)startColor
                         endColor:(UIColor *)endColor
@@ -73,12 +73,12 @@ typedef enum {
                   detailTextFont:(UIFont *)detailFont
                        hideAfter:(NSTimeInterval)interval;
 
-+ (MTInfoPanel *)showPanelInWindow:(UIWindow *)window 
++ (MTInfoPanel *)showPanelInWindow:(UIWindow *)window
                               type:(MTInfoPanelType)type
                              title:(NSString *)title
                           subtitle:(NSString *)subtitle;
 
-+ (MTInfoPanel *)showPanelInWindow:(UIWindow *)window 
++ (MTInfoPanel *)showPanelInWindow:(UIWindow *)window
                               type:(MTInfoPanelType)type
                              title:(NSString *)title
                           subtitle:(NSString *)subtitle
@@ -87,12 +87,12 @@ typedef enum {
 + (MTInfoPanel *)showPanelInWindow:(UIWindow *)window
                               type:(MTInfoPanelType)type
                              title:(NSString *)title
-                          subtitle:(NSString *)subtitle 
+                          subtitle:(NSString *)subtitle
                              image:(UIImage *)image;
 
-+ (MTInfoPanel *)showPanelInWindow:(UIWindow *)window 
-                              type:(MTInfoPanelType)type 
-                             title:(NSString *)title 
++ (MTInfoPanel *)showPanelInWindow:(UIWindow *)window
+                              type:(MTInfoPanelType)type
+                             title:(NSString *)title
                           subtitle:(NSString *)subtitle
                              image:(UIImage *)image
                          hideAfter:(NSTimeInterval)interval;

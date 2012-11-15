@@ -9,9 +9,9 @@
 #import "MTInfoPanel.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define MT_RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 
-// Private Methods
+#define MT_RGBA(r, g, b, a) [UIColor colorWithRed:r/255.f green:g/255.f blue:b/255.f alpha:a]
+
 
 @interface MTInfoPanel ()
 
@@ -20,24 +20,10 @@
 @property (nonatomic, strong) UIImageView *thumbImage;
 @property (nonatomic, strong) UIView *backgroundGradient;
 
-+ (MTInfoPanel *)infoPanel;
-
-- (void)setup;
-- (void)setBackgroundGradientFrom:(UIColor *)fromColor to:(UIColor *)toColor;
-- (UIColor *)changeColor:(UIColor *)sourceColor withFactor:(CGFloat)factor;
-
 @end
 
 
 @implementation MTInfoPanel
-
-@synthesize titleLabel = titleLabel_;
-@synthesize detailLabel = detailLabel_;
-@synthesize thumbImage = thumbImage_;
-@synthesize backgroundGradient = backgroundGradient_;
-@synthesize onTouched = onTouched_;
-@synthesize delegate = delegate_;
-@synthesize onFinished = onFinished_;
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Lifecycle
@@ -47,7 +33,7 @@
                             type:(MTInfoPanelType)type 
                            title:(NSString *)title
                         subtitle:(NSString *)subtitle {
-    return [self showPanelInView:view type:type title:title subtitle:subtitle hideAfter:-1];
+    return [self showPanelInView:view type:type title:title subtitle:subtitle hideAfter:-1.];
 }
 
 +(MTInfoPanel *)showPanelInView:(UIView *)view
@@ -74,16 +60,16 @@
                        hideAfter:(NSTimeInterval)interval {
     UIColor *startColor = nil;
     UIColor *endColor = nil;
-    UIFont *titleFont = [UIFont boldSystemFontOfSize:14.];
-    UIFont *detailFont = [UIFont systemFontOfSize:14.];
+    UIFont *titleFont = [UIFont boldSystemFontOfSize:14.f];
+    UIFont *detailFont = [UIFont systemFontOfSize:14.f];
     UIColor *titleColor = [UIColor whiteColor];
     UIColor *detailColor = nil;
     
     switch (type) {
         case MTInfoPanelTypeInfo: {
-            startColor = MT_RGBA(91, 134, 206, 1.0);
-            endColor = MT_RGBA(69, 106, 177, 1.0);
-            detailColor = MT_RGBA(210, 210, 235, 1.0);
+            startColor = MT_RGBA(91.f, 134.f, 206.f, 1.f);
+            endColor = MT_RGBA(69.f, 106.f, 177.f, 1.f);
+            detailColor = MT_RGBA(210.f, 210.f, 235.f, 1.f);
             
             if (image == nil) {
                 image = [UIImage imageNamed:@"MTInfoPanel.bundle/Tick"];
@@ -246,18 +232,18 @@
 }
 
 ////////////////////////////////////////////////////////////////////////
-#pragma mark -
-#pragma mark UIView
+#pragma mark - UIView
 ////////////////////////////////////////////////////////////////////////
 
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    
-    // update width of layers to allow rotation to landscape
+- (void)layoutSubviews {
+    [super layoutSubviews];
+
+    // update width of sublayers
     for (CALayer *layer in self.backgroundGradient.layer.sublayers) {
         if ([layer isKindOfClass:[CAGradientLayer class]]) {
             CGRect layerFrame = layer.frame;
-            layerFrame.size.width = frame.size.width;
+
+            layerFrame.size.width = CGRectGetWidth(self.bounds);
             layer.frame = layerFrame;
         }
     }
@@ -341,11 +327,9 @@
 	transition.type = kCATransitionPush;	
 	transition.subtype = kCATransitionFromTop;
 	[self.layer addAnimation:transition forKey:nil];
-    self.frame = CGRectMake(0, -self.frame.size.height, self.frame.size.width, self.frame.size.height); 
+    self.frame = CGRectMake(0.f, -self.frame.size.height, self.frame.size.width, self.frame.size.height);
     
-    [self performSelector:@selector(finish)
-               withObject:nil
-               afterDelay:transition.duration];
+    [self performSelector:@selector(finish) withObject:nil afterDelay:transition.duration];
 }
 
 - (void)finish {
@@ -353,7 +337,7 @@
     
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    [delegate_ performSelector:onFinished_];
+    [_delegate performSelector:_onFinished];
 #pragma clang diagnostic pop
 }
 
@@ -363,9 +347,11 @@
 ////////////////////////////////////////////////////////////////////////
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    [self performSelector:onTouched_];
+    [self performSelector:_onTouched];
 #pragma clang diagnostic pop
 }
 
@@ -389,37 +375,35 @@
 
 - (void)setup {
     self.opaque = NO;
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.layer.shadowOffset = CGSizeMake(0.f, 2.f);
     self.layer.shadowRadius = 2.5f;
     self.layer.shadowOpacity = 0.7;
     
-    backgroundGradient_ = [[UIView alloc] initWithFrame:self.bounds];
-    backgroundGradient_.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    backgroundGradient_.alpha = 0.88f;
-    [self addSubview:backgroundGradient_];
+    _backgroundGradient = [[UIView alloc] initWithFrame:self.bounds];
+    _backgroundGradient.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _backgroundGradient.alpha = 0.88f;
+    [self addSubview:_backgroundGradient];
     
-    titleLabel_ = [[UILabel alloc] initWithFrame:CGRectMake(57.f,7.f,240.f,19.f)];
-    titleLabel_.backgroundColor = [UIColor clearColor];
-    titleLabel_.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+    _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(57.f,7.f,240.f,19.f)];
+    _titleLabel.backgroundColor = [UIColor clearColor];
+    _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+    _titleLabel.layer.shadowOffset = CGSizeMake(0.f, -0.5f);
+    _titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+	_titleLabel.layer.shadowRadius = 0.5f;
+	_titleLabel.layer.shadowOpacity = 0.95;
+    [self addSubview:_titleLabel];
     
-    titleLabel_.layer.shadowOffset = CGSizeMake(0.f, -0.5f);
-    titleLabel_.layer.shadowColor = [UIColor blackColor].CGColor;
-	titleLabel_.layer.shadowRadius = 0.5f;
-	titleLabel_.layer.shadowOpacity = 0.95;
+    _detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(57.f, 26.f, 251.f, 32.f)];
+    _detailLabel.backgroundColor = [UIColor clearColor];
+    _detailLabel.numberOfLines = 0;
+    _detailLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [self addSubview:_detailLabel];
     
-    [self addSubview:titleLabel_];
+    _thumbImage = [[UIImageView alloc] initWithFrame:CGRectMake(9.f, 9.f, 37.f, 34.f)];
+    [self addSubview:_thumbImage];
     
-    detailLabel_ = [[UILabel alloc] initWithFrame:CGRectMake(57.f, 26.f, 251.f, 32.f)];
-    detailLabel_.backgroundColor = [UIColor clearColor];
-    detailLabel_.numberOfLines = 0;
-    detailLabel_.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self addSubview:detailLabel_];
-    
-    thumbImage_ = [[UIImageView alloc] initWithFrame:CGRectMake(9.f, 9.f, 37.f, 34.f)];
-    [self addSubview:thumbImage_];
-    
-    self.onTouched = @selector(hidePanel);
-    self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    _onTouched = @selector(hidePanel);
 }
 
 
